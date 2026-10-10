@@ -1,56 +1,89 @@
 # Express.js + TypeScript + Prisma + MongoDB
 
-A clean and modular MVP backend starter built with **Express.js, TypeScript, Prisma ORM, and MongoDB**.
+Express.js, TypeScript, Prisma ORM ar MongoDB diye banano ekta clean, modular REST API starter.
+Ei guide ta step by step follow korle zero theke running project pawa jabe.
 
-This setup is designed to provide a simple and scalable foundation for building REST APIs with a modular architecture.
+---
+
+## Table of Contents
+
+1. [Tech Stack](#tech-stack)
+2. [Prerequisites](#prerequisites)
+3. [Step 1: Project Initialization](#step-1-project-initialization)
+4. [Step 2: Dependencies Install](#step-2-dependencies-install)
+5. [Step 3: TypeScript Configuration](#step-3-typescript-configuration)
+6. [Step 4: package.json Configuration](#step-4-packagejson-configuration)
+7. [Step 5: Prisma Init](#step-5-prisma-init)
+8. [Step 6: Environment Configuration](#step-6-environment-configuration)
+9. [Step 7: Prisma Schema](#step-7-prisma-schema)
+10. [Step 8: Prisma Generate and DB Push](#step-8-prisma-generate-and-db-push)
+11. [Step 9: Project Structure](#step-9-project-structure)
+12. [Step 10: Prisma Configuration](#step-10-prisma-configuration)
+13. [Step 11: Env Config File](#step-11-env-config-file)
+14. [Step 12: User Module](#step-12-user-module)
+15. [Step 13: Express App](#step-13-express-app)
+16. [Step 14: Server Entry Point](#step-14-server-entry-point)
+17. [Step 15: Project Run](#step-15-project-run)
+18. [Step 16: Production Build](#step-16-production-build)
+19. [Prisma Commands Cheat Sheet](#prisma-commands-cheat-sheet)
+20. [New Module Add Kora](#new-module-add-kora)
+21. [Troubleshooting](#troubleshooting)
+22. [Security Checklist](#security-checklist)
+23. [Production Improvements](#production-improvements)
 
 ---
 
 ## Tech Stack
 
-* **Node.js**
-* **Express.js**
-* **TypeScript**
-* **Prisma ORM v6**
-* **MongoDB**
-* **CORS**
-* **Helmet**
-* **Morgan**
-* **dotenv**
-* **tsx**
+| Tool | Kaj |
+| --- | --- |
+| Node.js | Runtime |
+| Express.js | Web framework |
+| TypeScript | Type safety |
+| Prisma ORM v6 | Database ORM |
+| MongoDB | Database |
+| CORS | Cross-origin request handle |
+| Helmet | Security headers |
+| Morgan | HTTP request logger |
+| dotenv | Environment variable load |
+| tsx | TypeScript direct run (dev) |
 
 ---
 
-# 1. Project Initialization
+## Prerequisites
 
-Create a new project directory:
+Shuru korar age check kore nao:
+
+- Node.js 18 ba tar upore (`node -v`)
+- npm (`npm -v`)
+- MongoDB Atlas account (free cluster hole cholbe) ba local MongoDB
+- Code editor (VS Code recommended)
+
+---
+
+## Step 1: Project Initialization
+
+Notun folder baniye project initialize koro:
 
 ```bash
 mkdir express-prisma
 cd express-prisma
-```
-
-Initialize the Node.js project:
-
-```bash
 npm init -y
 ```
 
+Ei command `package.json` file create korbe.
+
 ---
 
-# 2. Install Dependencies
+## Step 2: Dependencies Install
 
-## Production Dependencies
-
-Install Express, Prisma Client, and other required packages:
+### Production Dependencies
 
 ```bash
 npm install express cors helmet morgan dotenv @prisma/client@^6.4.1
 ```
 
-## Development Dependencies
-
-Install TypeScript, Prisma CLI, type definitions, and `tsx`:
+### Development Dependencies
 
 ```bash
 npm install -D typescript tsx prisma@^6.4.1 @types/node @types/express @types/cors @types/morgan
@@ -58,9 +91,9 @@ npm install -D typescript tsx prisma@^6.4.1 @types/node @types/express @types/co
 
 ---
 
-# 3. TypeScript Configuration
+## Step 3: TypeScript Configuration
 
-Create a `tsconfig.json` file in the root directory:
+Project root-e `tsconfig.json` file create koro:
 
 ```json
 {
@@ -79,25 +112,23 @@ Create a `tsconfig.json` file in the root directory:
 }
 ```
 
-### Configuration Explanation
-
-| Option                             | Purpose                                  |
-| ---------------------------------- | ---------------------------------------- |
-| `target`                           | Compiles TypeScript to modern JavaScript |
-| `module`                           | Uses Node.js ESM modules                 |
-| `moduleResolution`                 | Resolves modules using Node.js rules     |
-| `rootDir`                          | Source code directory                    |
-| `outDir`                           | Compiled JavaScript directory            |
-| `strict`                           | Enables strict TypeScript checking       |
-| `esModuleInterop`                  | Improves CommonJS/ESM interoperability   |
-| `skipLibCheck`                     | Skips type checking of declaration files |
-| `forceConsistentCasingInFileNames` | Prevents casing-related import issues    |
+| Option | Kaj |
+| --- | --- |
+| `target` | Modern JavaScript-e compile kore |
+| `module` | Node.js ESM module system use kore |
+| `moduleResolution` | Node.js-er rule onujayi module resolve kore |
+| `rootDir` | Source code folder |
+| `outDir` | Compiled JavaScript folder |
+| `strict` | Strict type checking on kore |
+| `esModuleInterop` | CommonJS ar ESM compatibility thik rakhe |
+| `skipLibCheck` | Declaration file type check skip kore (fast build) |
+| `forceConsistentCasingInFileNames` | File name casing issue atkay |
 
 ---
 
-# 4. Configure package.json
+## Step 4: package.json Configuration
 
-Update your `package.json`:
+`npm init -y` er por generate hoya `package.json` open kore ei field gulo update koro. `"type": "module"` ta must, karon amra ESM use korchi.
 
 ```json
 {
@@ -114,37 +145,27 @@ Update your `package.json`:
 }
 ```
 
-The important scripts are:
+Scripts er kaj:
 
-```bash
-npm run dev
-```
+| Command | Kaj |
+| --- | --- |
+| `npm run dev` | Development server, file change hole auto reload |
+| `npm run build` | TypeScript ke JavaScript-e compile kore `dist/` folder-e rakhe |
+| `npm start` | Compiled production build run kore |
 
-Runs the development server with automatic reload.
-
-```bash
-npm run build
-```
-
-Compiles TypeScript into JavaScript.
-
-```bash
-npm start
-```
-
-Runs the compiled production application.
+Note: `dependencies` ar `devDependencies` section Step 2 te automatic add hoye geche, seta delete korbe na.
 
 ---
 
-# 5. Initialize Prisma
+## Step 5: Prisma Init
 
-Initialize Prisma:
+MongoDB provider diye Prisma initialize koro:
 
 ```bash
-npx prisma init
+npx prisma init --datasource-provider mongodb
 ```
 
-This will create:
+Ei command duita jinis create korbe:
 
 ```text
 prisma/
@@ -153,31 +174,7 @@ prisma/
 .env
 ```
 
----
-
-# 6. MongoDB Configuration
-
-Create or update the `.env` file in the project root:
-
-```env
-PORT=5000
-NODE_ENV=development
-
-DATABASE_URL="mongodb+srv://<username>:<password>@cluster0.xxxx.mongodb.net/<dbname>?retryWrites=true&w=majority"
-```
-
-### Example
-
-```env
-PORT=5000
-NODE_ENV=development
-
-DATABASE_URL="mongodb+srv://myuser:mypassword@cluster0.xxxxx.mongodb.net/mydatabase?retryWrites=true&w=majority"
-```
-
-> Never commit your `.env` file to Git.
-
-Add the following to `.gitignore`:
+Ekhon `.gitignore` file create koro (na thakle) ar ei lines add koro:
 
 ```gitignore
 node_modules
@@ -186,17 +183,53 @@ dist
 .env.local
 ```
 
+Important: `.env` kokhono Git-e commit korbe na. Ete database password thake.
+
 ---
 
-# 7. Prisma Schema
+## Step 6: Environment Configuration
 
-Open:
+### 6.1 MongoDB connection string collect koro
 
-```text
-prisma/schema.prisma
+MongoDB Atlas-e:
+
+1. Cluster-e giye **Connect** button click koro
+2. **Drivers** select koro
+3. Connection string copy koro
+
+### 6.2 `.env` file update koro
+
+Prisma init `.env` file already baniyeche. Setake ei bhabe update koro:
+
+```env
+PORT=5000
+NODE_ENV=development
+
+DATABASE_URL="mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/<dbname>?retryWrites=true&w=majority"
 ```
 
-Configure Prisma for MongoDB:
+Real example:
+
+```env
+PORT=5000
+NODE_ENV=development
+
+DATABASE_URL="mongodb+srv://myuser:mypassword@cluster0.xxxxx.mongodb.net/mydatabase?retryWrites=true&w=majority"
+```
+
+### 6.3 Checklist
+
+- `<username>` ar `<password>` replace koro (angle bracket `<>` soho)
+- Database name (`mydatabase`) must dite hobe, na dile Prisma `test` database use korbe
+- Password-e special character (`@`, `#`, `/`, `:`) thakle URL-encode korte hobe (jemon `@` hobe `%40`)
+- MongoDB Atlas > **Network Access**-e tomar IP whitelist koro (development-e `0.0.0.0/0` dile cholbe, production-e na)
+- Database user create kora ache kina check koro
+
+---
+
+## Step 7: Prisma Schema
+
+`prisma/schema.prisma` file open kore puro content ei dike replace koro:
 
 ```prisma
 generator client {
@@ -221,29 +254,56 @@ model User {
 }
 ```
 
+Schema bujhe nao:
+
+| Part | Mane |
+| --- | --- |
+| `@id @default(auto()) @map("_id") @db.ObjectId` | MongoDB-r `_id` ke Prisma-r `id` hishebe map kore |
+| `@unique` | Same email duibar use kora jabe na |
+| `@default("user")` | Role na dile default `user` hobe |
+| `@updatedAt` | Record update hole automatic time update hoy |
+| `@@map("users")` | MongoDB collection-er naam `users` hobe |
+
+Schema validate ar format kore dekho:
+
+```bash
+npx prisma validate
+npx prisma format
+```
+
 ---
 
-# 8. Generate Prisma Client
+## Step 8: Prisma Generate and DB Push
 
-After configuring your Prisma schema, generate the Prisma Client:
+### 8.1 Prisma Client generate
 
 ```bash
 npx prisma generate
 ```
 
-Whenever you make changes to your Prisma schema, run:
+Ei command schema theke type-safe Prisma Client banay. Jokhon-i `schema.prisma` change korbe, abar run korbe.
+
+### 8.2 Database-e schema sync
+
+MongoDB-te `prisma migrate` kaj kore na. Tai `db push` use korte hoy:
 
 ```bash
-npx prisma generate
+npx prisma db push
 ```
 
-again.
+Ete collection ar unique index (`email`) database-e create hoy. Ei step skip korle `email @unique` kaj korbe na.
+
+Expected output:
+
+```text
+Your database is now in sync with your Prisma schema.
+```
 
 ---
 
-# 9. Project Structure
+## Step 9: Project Structure
 
-Recommended MVP folder structure:
+Ekhon `src` folder ar baki file/folder gulo baniye nao. Final structure ei rokom hobe:
 
 ```text
 express-prisma/
@@ -252,7 +312,6 @@ express-prisma/
 │   └── schema.prisma
 │
 ├── src/
-│   │
 │   ├── config/
 │   │   ├── env.ts
 │   │   └── prisma.ts
@@ -274,17 +333,33 @@ express-prisma/
 └── README.md
 ```
 
----
+Folder ar file ek command-e baniye nite chaile:
 
-# 10. Prisma Configuration
-
-Create:
-
-```text
-src/config/prisma.ts
+```bash
+mkdir -p src/config src/modules/user
+touch src/app.ts src/server.ts
+touch src/config/env.ts src/config/prisma.ts
+touch src/modules/user/user.controller.ts src/modules/user/user.service.ts src/modules/user/user.routes.ts
 ```
 
-Add:
+Architecture flow:
+
+```text
+Request -> Route -> Controller -> Service -> Prisma Client -> MongoDB
+```
+
+| Layer | Dayitto |
+| --- | --- |
+| Route | API endpoint define kora |
+| Controller | Request data read kora, service call kora, response pathano, error pass kora |
+| Service | Business logic ar Prisma query |
+| Prisma | Database communication |
+
+---
+
+## Step 10: Prisma Configuration
+
+`src/config/prisma.ts`:
 
 ```typescript
 import { PrismaClient } from "@prisma/client";
@@ -294,19 +369,13 @@ const prisma = new PrismaClient();
 export default prisma;
 ```
 
-This creates a reusable Prisma Client instance that can be imported throughout the application.
+Ei file ekta reusable Prisma Client instance dey. Puro app-e ekhan theke import korbe, kokhono notun `new PrismaClient()` baniye na.
 
 ---
 
-# 11. Environment Configuration
+## Step 11: Env Config File
 
-Create:
-
-```text
-src/config/env.ts
-```
-
-Add:
+`src/config/env.ts`:
 
 ```typescript
 import dotenv from "dotenv";
@@ -320,192 +389,31 @@ export const ENV = {
 };
 ```
 
-This centralizes environment variables so they can be accessed consistently throughout the application.
+Environment variable gulo ek jaygay rakhle puro app-e consistent vabe access kora jay.
 
 ---
 
-# 12. Express Application
+## Step 12: User Module
 
-Create:
+Ei module-e 3 ta file lagbe. Order: Service, Controller, Routes.
 
-```text
-src/app.ts
-```
+### 12.1 Service
 
-Add:
-
-```typescript
-import express, {
-  Application,
-  Request,
-  Response,
-  NextFunction,
-} from "express";
-import cors from "cors";
-import helmet from "helmet";
-import morgan from "morgan";
-
-import { userRoutes } from "./modules/user/user.routes.js";
-
-const app: Application = express();
-
-/**
- * Security
- */
-app.use(helmet());
-
-/**
- * CORS
- */
-app.use(cors());
-
-/**
- * HTTP Request Logger
- */
-app.use(morgan("dev"));
-
-/**
- * Body Parsers
- */
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-/**
- * Health Check
- */
-app.get("/health", (req: Request, res: Response) => {
-  res.status(200).json({
-    status: "OK",
-    timestamp: new Date().toISOString(),
-  });
-});
-
-/**
- * API Routes
- */
-app.use("/api/v1/users", userRoutes);
-
-/**
- * 404 Handler
- */
-app.use((req: Request, res: Response) => {
-  res.status(404).json({
-    success: false,
-    message: `Cannot ${req.method} ${req.originalUrl}`,
-  });
-});
-
-/**
- * Global Error Handler
- */
-app.use(
-  (
-    err: Error,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) => {
-    console.error(err);
-
-    res.status(500).json({
-      success: false,
-      message: err.message || "Internal Server Error",
-    });
-  }
-);
-
-export default app;
-```
-
----
-
-# 13. Server Entry Point
-
-Create:
-
-```text
-src/server.ts
-```
-
-Add:
-
-```typescript
-import app from "./app.js";
-import prisma from "./config/prisma.js";
-import { ENV } from "./config/env.js";
-
-async function bootstrap() {
-  try {
-    await prisma.$connect();
-
-    console.log("Connected to MongoDB via Prisma");
-
-    app.listen(ENV.PORT, () => {
-      console.log(`Server running on port ${ENV.PORT}`);
-    });
-  } catch (error) {
-    console.error("Database connection failed:", error);
-
-    await prisma.$disconnect();
-
-    process.exit(1);
-  }
-}
-
-bootstrap();
-```
-
-The application will:
-
-1. Load environment variables
-2. Connect to MongoDB through Prisma
-3. Start the Express server
-4. Listen on the configured port
-
-If the database connection fails, the application exits.
-
----
-
-# 14. User Module
-
-Create the following files:
-
-```text
-src/modules/user/
-├── user.controller.ts
-├── user.service.ts
-└── user.routes.ts
-```
-
-This follows a simple modular architecture:
-
-```text
-Route
-  ↓
-Controller
-  ↓
-Service
-  ↓
-Prisma
-  ↓
-MongoDB
-```
-
----
-
-## User Service
-
-Create:
-
-```text
-src/modules/user/user.service.ts
-```
+`src/modules/user/user.service.ts`:
 
 ```typescript
 import prisma from "../../config/prisma.js";
 
 export const getUsers = async () => {
   return prisma.user.findMany({
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      role: true,
+      createdAt: true,
+      updatedAt: true,
+    },
     orderBy: {
       createdAt: "desc",
     },
@@ -513,15 +421,11 @@ export const getUsers = async () => {
 };
 ```
 
----
+Note: `select` diye `password` field bad deya hoyeche, jate API response-e password leak na hoy.
 
-## User Controller
+### 12.2 Controller
 
-Create:
-
-```text
-src/modules/user/user.controller.ts
-```
+`src/modules/user/user.controller.ts`:
 
 ```typescript
 import { Request, Response, NextFunction } from "express";
@@ -545,15 +449,9 @@ export const getUsersController = async (
 };
 ```
 
----
+### 12.3 Routes
 
-## User Routes
-
-Create:
-
-```text
-src/modules/user/user.routes.ts
-```
+`src/modules/user/user.routes.ts`:
 
 ```typescript
 import { Router } from "express";
@@ -566,62 +464,127 @@ router.get("/", getUsersController);
 export const userRoutes = router;
 ```
 
+Important: ESM mode-e import path-er shesh-e `.js` extension likhte hobe (file `.ts` hole-o). Eta na likhle runtime error pabe.
+
 ---
 
-# 15. API Endpoints
+## Step 13: Express App
 
-After starting the application, the following endpoints will be available.
+`src/app.ts`:
 
-### Health Check
+```typescript
+import express, {
+  Application,
+  Request,
+  Response,
+  NextFunction,
+} from "express";
+import cors from "cors";
+import helmet from "helmet";
+import morgan from "morgan";
 
-```http
-GET /health
+import { userRoutes } from "./modules/user/user.routes.js";
+
+const app: Application = express();
+
+// Security headers
+app.use(helmet());
+
+// CORS
+app.use(cors());
+
+// HTTP request logger
+app.use(morgan("dev"));
+
+// Body parsers
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Health check
+app.get("/health", (req: Request, res: Response) => {
+  res.status(200).json({
+    status: "OK",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// API routes
+app.use("/api/v1/users", userRoutes);
+
+// 404 handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({
+    success: false,
+    message: `Cannot ${req.method} ${req.originalUrl}`,
+  });
+});
+
+// Global error handler
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err);
+
+  res.status(500).json({
+    success: false,
+    message: err.message || "Internal Server Error",
+  });
+});
+
+export default app;
 ```
 
-Example response:
+Middleware order important: security, parser, routes, 404, tarpor error handler shobar shesh-e.
 
-```json
-{
-  "status": "OK",
-  "timestamp": "2026-10-01T05:00:00.000Z"
+---
+
+## Step 14: Server Entry Point
+
+`src/server.ts`:
+
+```typescript
+import app from "./app.js";
+import prisma from "./config/prisma.js";
+import { ENV } from "./config/env.js";
+
+async function bootstrap() {
+  try {
+    await prisma.$connect();
+    console.log("Connected to MongoDB via Prisma");
+
+    app.listen(ENV.PORT, () => {
+      console.log(`Server running on port ${ENV.PORT}`);
+    });
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    await prisma.$disconnect();
+    process.exit(1);
+  }
 }
+
+// Graceful shutdown
+const shutdown = async () => {
+  console.log("Shutting down server...");
+  await prisma.$disconnect();
+  process.exit(0);
+};
+
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);
+
+bootstrap();
 ```
+
+Server start hole:
+
+1. Environment variable load hoy
+2. Prisma diye MongoDB connect hoy
+3. Express server port-e listen kore
+4. Database connect na hole app exit kore
 
 ---
 
-### Get Users
+## Step 15: Project Run
 
-```http
-GET /api/v1/users
-```
-
-Example response:
-
-```json
-{
-  "success": true,
-  "data": [
-    {
-      "id": "66f123456789abcdef123456",
-      "name": "John Doe",
-      "email": "john@example.com",
-      "role": "user",
-      "createdAt": "2026-10-01T05:00:00.000Z",
-      "updatedAt": "2026-10-01T05:00:00.000Z"
-    }
-  ]
-}
-```
-
-> Passwords should never be returned from API responses. In a real application, select only the fields that are safe to expose.
-
----
-
-# 16. Run the Project
-
-## Development
-
-Start the development server:
+### 15.1 Development server start
 
 ```bash
 npm run dev
@@ -634,35 +597,47 @@ Connected to MongoDB via Prisma
 Server running on port 5000
 ```
 
-The API will be available at:
+### 15.2 Test koro
 
-```text
-http://localhost:5000
+| Endpoint | URL |
+| --- | --- |
+| Health check | `GET http://localhost:5000/health` |
+| Users list | `GET http://localhost:5000/api/v1/users` |
+
+Health check response:
+
+```json
+{
+  "status": "OK",
+  "timestamp": "2026-10-01T05:00:00.000Z"
+}
 ```
 
-Health check:
+Users response (shurute empty array pabe):
 
-```text
-http://localhost:5000/health
+```json
+{
+  "success": true,
+  "data": []
+}
 ```
 
-Users endpoint:
+Browser, Postman, ba curl diye test korte paro:
 
-```text
-http://localhost:5000/api/v1/users
+```bash
+curl http://localhost:5000/health
 ```
 
 ---
 
-# 17. Build for Production
-
-Compile the TypeScript application:
+## Step 16: Production Build
 
 ```bash
 npm run build
+npm start
 ```
 
-This generates:
+Build korle `dist/` folder generate hoy:
 
 ```text
 dist/
@@ -672,184 +647,25 @@ dist/
 └── modules/
 ```
 
-Start the production build:
-
-```bash
-npm start
-```
+Production server-e `.env` file na rekhe hosting platform-er environment variable setting use koro.
 
 ---
 
-# 18. Prisma Commands
+## Prisma Commands Cheat Sheet
 
-### Generate Prisma Client
-
-```bash
-npx prisma generate
-```
-
-### Validate Prisma Schema
-
-```bash
-npx prisma validate
-```
-
-### Format Prisma Schema
-
-```bash
-npx prisma format
-```
-
-### Open Prisma Studio
-
-```bash
-npx prisma studio
-```
-
-Prisma Studio can be used to inspect and manage database records during development.
+| Command | Kaj |
+| --- | --- |
+| `npx prisma generate` | Prisma Client generate kore |
+| `npx prisma db push` | Schema database-e sync kore |
+| `npx prisma validate` | Schema valid kina check kore |
+| `npx prisma format` | Schema file format kore |
+| `npx prisma studio` | Browser-e database GUI open kore |
 
 ---
 
-# 19. MongoDB Notes
+## New Module Add Kora
 
-This project uses MongoDB through Prisma.
-
-The MongoDB connection string should follow this format:
-
-```env
-DATABASE_URL="mongodb+srv://<username>:<password>@<cluster>/<database>?retryWrites=true&w=majority"
-```
-
-Make sure:
-
-* MongoDB cluster is running
-* Database user exists
-* Username and password are correct
-* Your IP address is allowed in MongoDB Network Access
-* The database name is correct
-* The connection string is stored in `.env`
-
----
-
-# 20. Environment Variables
-
-Recommended `.env`:
-
-```env
-PORT=5000
-NODE_ENV=development
-DATABASE_URL="mongodb+srv://<username>:<password>@<cluster>/<database>?retryWrites=true&w=majority"
-```
-
-For production, use environment variables provided by your hosting/server environment instead of committing secrets to Git.
-
----
-
-# 21. API Architecture
-
-The project follows a modular architecture:
-
-```text
-Request
-   │
-   ▼
-Route
-   │
-   ▼
-Controller
-   │
-   ▼
-Service
-   │
-   ▼
-Prisma Client
-   │
-   ▼
-MongoDB
-```
-
-### Route
-
-Responsible for defining API endpoints.
-
-### Controller
-
-Responsible for:
-
-* Reading request data
-* Calling services
-* Returning HTTP responses
-* Passing errors to the error handler
-
-### Service
-
-Responsible for:
-
-* Business logic
-* Database operations
-* Prisma queries
-
-### Prisma
-
-Responsible for:
-
-* Database communication
-* Type-safe database queries
-* MongoDB interaction
-
----
-
-# 22. Recommended Development Workflow
-
-After cloning or downloading the project:
-
-### Step 1
-
-Install dependencies:
-
-```bash
-npm install
-```
-
-### Step 2
-
-Configure `.env`:
-
-```env
-PORT=5000
-NODE_ENV=development
-DATABASE_URL="your-mongodb-connection-string"
-```
-
-### Step 3
-
-Generate Prisma Client:
-
-```bash
-npx prisma generate
-```
-
-### Step 4
-
-Start development server:
-
-```bash
-npm run dev
-```
-
-### Step 5
-
-Test health endpoint:
-
-```http
-GET http://localhost:5000/health
-```
-
----
-
-# 23. Adding a New Module
-
-For example, if you want to add an `auth` module:
+Dhoro `auth` module add korbe:
 
 ```text
 src/modules/
@@ -857,14 +673,10 @@ src/modules/
 │   ├── auth.controller.ts
 │   ├── auth.service.ts
 │   └── auth.routes.ts
-│
 └── user/
-    ├── user.controller.ts
-    ├── user.service.ts
-    └── user.routes.ts
 ```
 
-Then register the route inside `app.ts`:
+Tarpor `app.ts`-e route register koro:
 
 ```typescript
 import { authRoutes } from "./modules/auth/auth.routes.js";
@@ -872,112 +684,80 @@ import { authRoutes } from "./modules/auth/auth.routes.js";
 app.use("/api/v1/auth", authRoutes);
 ```
 
-This allows the project to grow without putting all business logic into a single file.
+Prottek notun feature-er jonno ekta module folder baniye same 3 file pattern (controller, service, routes) follow koro.
 
 ---
 
-# 24. Recommended Production Improvements
+## Troubleshooting
 
-This setup is intended as an MVP foundation. For a larger production application, consider adding:
-
-* Request validation with Zod
-* Centralized custom error classes
-* Authentication with JWT/session
-* Password hashing with Argon2 or bcrypt
-* Rate limiting
-* Request ID / correlation ID
-* Structured logging
-* API documentation with OpenAPI/Swagger
-* Pagination
-* Database indexes
-* Input sanitization
-* Secure CORS configuration
-* Graceful shutdown
-* Automated tests
-* CI/CD
-* Environment-specific configuration
-* Docker support
-* Monitoring and error tracking
+| Problem | Karon | Solution |
+| --- | --- | --- |
+| `@prisma/client did not initialize yet` | Prisma Client generate hoyni | `npx prisma generate` run koro |
+| `Can't reach database server` | IP whitelist nai ba connection string vul | MongoDB Atlas Network Access check koro, `.env` check koro |
+| `Authentication failed` | Username/password vul | Password URL-encode koro, user permission check koro |
+| `Cannot find module './app'` | Import-e `.js` extension nai | `./app.js` likho |
+| `Unique constraint` ba index kaj korche na | `db push` kora hoyni | `npx prisma db push` run koro |
+| Port already in use | 5000 port onno process use korche | `.env`-e `PORT` change koro |
+| Schema change korar por type error | Client purono | `npx prisma generate` abar run koro |
 
 ---
 
-# 25. Graceful Shutdown
+## Security Checklist
 
-For production applications, Prisma should be disconnected when the Node.js process receives termination signals.
+Production-e deploy korar age:
 
-Example:
-
-```typescript
-const shutdown = async () => {
-  console.log("Shutting down server...");
-
-  await prisma.$disconnect();
-
-  process.exit(0);
-};
-
-process.on("SIGINT", shutdown);
-process.on("SIGTERM", shutdown);
-```
-
-This can be added to `server.ts`.
+- [ ] `.env` kokhono commit kora hoyni
+- [ ] Strong database credentials
+- [ ] MongoDB Network Access thik kora
+- [ ] HTTPS use kora
+- [ ] CORS shudhu trusted origin-er jonno configure kora
+- [ ] Helmet enabled
+- [ ] Shob request input validate kora
+- [ ] Password hash kora (Argon2 ba bcrypt)
+- [ ] API response-e password expose hoy na
+- [ ] Rate limiting add kora
+- [ ] Authentication ar authorization add kora
+- [ ] Proper error handling
+- [ ] Dependency update rakha
+- [ ] Production environment variable use kora
 
 ---
 
-# 26. Security Checklist
+## Production Improvements
 
-Before deploying to production:
+Ei setup ekta MVP foundation. Boro application-er jonno ei gulo add korar kotha bhabo:
 
-* [ ] Never commit `.env`
-* [ ] Use strong database credentials
-* [ ] Configure MongoDB IP/network access correctly
-* [ ] Use HTTPS
-* [ ] Configure CORS for trusted origins
-* [ ] Enable Helmet
-* [ ] Validate all request inputs
-* [ ] Hash passwords
-* [ ] Never expose passwords in API responses
-* [ ] Add rate limiting
-* [ ] Add authentication/authorization
-* [ ] Add proper error handling
-* [ ] Keep dependencies updated
-* [ ] Use production environment variables
+- Zod diye request validation
+- Custom error class
+- JWT/session authentication
+- Argon2 ba bcrypt diye password hashing
+- Rate limiting
+- Structured logging
+- Swagger/OpenAPI documentation
+- Pagination
+- Database index
+- Automated test
+- CI/CD
+- Docker support
+- Monitoring ar error tracking
 
 ---
 
-# 27. Quick Start
+## Quick Start (Already Setup Kora Project)
 
-If everything is already configured, the complete startup process is:
+Kono developer jodi ready project clone kore, tahole shudhu:
 
 ```bash
 npm install
-```
-
-```bash
 npx prisma generate
-```
-
-```bash
+npx prisma db push
 npm run dev
 ```
 
-Then open:
-
-```text
-http://localhost:5000/health
-```
-
-You should receive:
-
-```json
-{
-  "status": "OK",
-  "timestamp": "..."
-}
-```
+Tarpor `http://localhost:5000/health` open koro.
 
 ---
 
-# License
+## License
 
-This project is available for personal and commercial use. Add your preferred license here if the project will be distributed publicly.
+Ei project personal ar commercial use-er jonno available. Public distribute korle tomar pochondoer license ekhane add koro.

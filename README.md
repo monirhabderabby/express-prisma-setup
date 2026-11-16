@@ -362,11 +362,18 @@ Request -> Route -> Controller -> Service -> Prisma Client -> MongoDB
 `src/config/prisma.ts`:
 
 ```typescript
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../generated/prisma/client.js";
 
-const prisma = new PrismaClient();
+const globalForPrisma = globalThis as unknown as {
+  prisma?: PrismaClient;
+};
 
-export default prisma;
+export const prisma =
+  globalForPrisma.prisma ?? new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
 ```
 
 Ei file ekta reusable Prisma Client instance dey. Puro app-e ekhan theke import korbe, kokhono notun `new PrismaClient()` baniye na.
